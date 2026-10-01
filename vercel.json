@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://teachapp-api.REPLACE_WITH_YOUR_WORKERS_SUBDOMAIN.workers.dev/api/:path*"
+      "destination": "https://teachapp-api.zac-tec.workers.dev/api/:path*"
     }
   ],
   "headers": [
