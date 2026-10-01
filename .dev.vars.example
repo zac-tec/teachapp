@@ -1,0 +1,7 @@
+# Copy to .dev.vars for local use. Never commit .dev.vars.
+APP_ORIGIN=http://localhost:5173
+GOOGLE_CLIENT_ID=YOUR_WEB_CLIENT_ID.apps.googleusercontent.com
+OWNER_EMAIL=guide@example.com
+STUDENT_EMAIL=learner@example.com
+# Generate with: openssl rand -hex 32
+SESSION_SECRET=REPLACE_WITH_A_RANDOM_SECRET_OF_AT_LEAST_32_CHARACTERS
