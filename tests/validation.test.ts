@@ -146,3 +146,12 @@ test("practice allows a learner update but rejects unsafe links and invalid date
     }),
   );
 });
+
+test('notebook links persist and old practice records remain valid',()=>{
+ const p={id:'notebook',kind:'practice',revision:0,payload:{title:'Loops',topic:'Python',date:'2026-10-02',code:'print(1)',notes:'',correction:'',url:'',status:'Working on it',difficulty:'Easy'}};
+ assert.equal(validateEntry(p).payload.notebookUrl,'');
+ const notebookUrl='https://colab.research.google.com/drive/example';
+ assert.equal(validateEntry({...p,payload:{...p.payload,notebookUrl}}).payload.notebookUrl,notebookUrl);
+ for(const link of ['javascript:alert(1)','https://user:password@example.com','data:text/html,test'])assert.throws(()=>validateEntry({...p,payload:{...p.payload,notebookUrl:link}}));
+ assert.equal(validateEntry(p).payload.code,'print(1)');
+});

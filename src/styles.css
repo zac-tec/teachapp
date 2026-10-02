@@ -983,24 +983,3 @@ summary {
     grid-template-columns: 1fr;
   }
 }
-.python-runner {
-  border: 1px solid #dce2ee;
-  border-radius: 12px;
-  padding: 16px;
-  margin: 16px 0;
-  background: #f8faff;
-}
-.python-output {
-  background: #142033;
-  color: #e3edf9;
-  min-height: 110px;
-  max-height: 320px;
-  overflow: auto;
-  padding: 16px;
-  border-radius: 8px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  font:
-    14px/1.6 ui-monospace,
-    monospace;
-}

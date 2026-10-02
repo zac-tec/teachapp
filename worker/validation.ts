@@ -62,6 +62,14 @@ export function validateEntry(input: unknown) {
         fail("Use a valid question link.");
       }
     }
+    const notebookUrl = p.notebookUrl ?? "";
+    if (!text(notebookUrl, 2000)) fail("Use a valid notebook link.");
+    if (notebookUrl) {
+      try {
+        const u = new URL(notebookUrl);
+        if (!["https:", "http:"].includes(u.protocol) || u.username || u.password) fail("Use an http or https notebook link without credentials.");
+      } catch { fail("Use a valid notebook link."); }
+    }
     payload = Object.fromEntries(
       [
         "title",
@@ -75,6 +83,7 @@ export function validateEntry(input: unknown) {
         "difficulty",
       ].map((k) => [k, p[k]]),
     );
+    payload.notebookUrl = notebookUrl;
   }
   if (kind === "lesson") {
     if (

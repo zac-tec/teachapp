@@ -1,4 +1,3 @@
-import PythonRunner from "./PythonRunner";
 import { useState } from "react";
 import type { RecordItem } from "./lib/curriculum";
 export const outcomes = [
@@ -45,6 +44,7 @@ export default function Practice({
         title: "",
         date: date(),
         url: "",
+        notebookUrl: "",
         topic: "",
         difficulty: "Not specified",
         status: "Planned",
@@ -136,17 +136,24 @@ export default function Practice({
               </select>
             </label>
           </div>
-          <label className="field">
-            My solution
-            <textarea
-              className="code-input"
-              rows={12}
-              value={p.code}
-              onChange={(e) => field("code", e.target.value)}
-              spellCheck={false}
-            />
-          </label>
-          <PythonRunner key={edit.id} code={p.code} />
+          <section className="card">
+            <h3>Solve in a notebook</h3>
+            <p>Open Colab in a new tab, write and save your solution there, then come back here to update your progress.</p>
+            <div className="actions">
+              <a className="primary" href="https://colab.research.google.com/" target="_blank" rel="noreferrer">Open Colab (Jupyter notebook) ↗</a>
+              {/^https?:\/\//.test(p.notebookUrl || "") && <a className="secondary" href={p.notebookUrl} target="_blank" rel="noreferrer">Open saved notebook ↗</a>}
+            </div>
+            <label className="field">My notebook link (optional)
+              <input type="url" maxLength={2000} value={p.notebookUrl || ""} onChange={e => field("notebookUrl", e.target.value)} placeholder="Paste your saved Colab notebook link" />
+            </label>
+            <p className="muted">Colab saves the notebook in your Google Drive. Paste its link here and click Save progress. Share it with your guide in Colab if you want feedback.</p>
+          </section>
+          <details open={!!p.code}>
+            <summary>Code copy (optional)</summary>
+            <label className="field">Saved code
+              <textarea className="code-input" rows={8} value={p.code} onChange={e => field("code", e.target.value)} spellCheck={false}/>
+            </label>
+          </details>
           <label className="field">
             Notes / next step
             <textarea
