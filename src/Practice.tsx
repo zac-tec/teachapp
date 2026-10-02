@@ -1,3 +1,4 @@
+import PythonRunner from "./PythonRunner";
 import { useState } from "react";
 import type { RecordItem } from "./lib/curriculum";
 export const outcomes = [
@@ -145,6 +146,7 @@ export default function Practice({
               spellCheck={false}
             />
           </label>
+          <PythonRunner key={edit.id} code={p.code} />
           <label className="field">
             Notes / next step
             <textarea
