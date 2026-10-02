@@ -48,7 +48,7 @@ test('commit preserves the base tree and rejects stale heads without a force pus
  const secret='s'.repeat(64);const key=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(secret)));
  const encrypted=await new EncryptJWT({token:'test-token'}).setProtectedHeader({alg:'dir',enc:'A256GCM'}).setSubject(user.sub).encrypt(key);
  const db={prepare:(sql:string)=>({bind:()=>({first:async()=>sql.includes('github_connections')?{login:'student',token:encrypted}:{full_name:'student/project'}})})};
- const env={DB:db,SESSION_SECRET:secret,GITHUB_CLIENT_ID:'client',GITHUB_CLIENT_SECRET:'secret'} as unknown as Env;
+ const env={DB:db,SESSION_SECRET:secret,GITHUB_CLIENT_ID:'client',GITHUB_CLIENT_SECRET:'secret',GITHUB_USERNAME:'student'} as unknown as Env;
  const original=globalThis.fetch;const writes:any[]=[];
  globalThis.fetch=async(input,init)=>{const path=String(input).replace('https://api.github.com','');const data=init?.body?JSON.parse(String(init.body)):null;if(init?.method!=='GET')writes.push({path,data});
  const result=path==='/repos/student/project'?{private:false,owner:{login:'student'},default_branch:'main'}:path.endsWith('/git/ref/heads/main')?{object:{sha:'head1'}}:path.endsWith('/git/commits/head1')?{tree:{sha:'tree1'}}:path.endsWith('/git/trees')?{sha:'tree2'}:path.endsWith('/git/commits')?{sha:'commit2',html_url:'https://github.com/student/project/commit/commit2'}:{};
