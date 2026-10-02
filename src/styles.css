@@ -911,3 +911,75 @@ footer {
     display: none;
   }
 }
+.practice-page .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.practice-page .field {
+  margin: 16px 0;
+}
+.practice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid #e4e7ed;
+}
+.section-head,
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.code-input {
+  font-family: monospace;
+  tab-size: 4;
+}
+[role="tablist"] {
+  flex-wrap: wrap;
+  height: auto !important;
+}
+.practice-page select {
+  border: 1px solid #d9deea;
+  border-radius: 8px;
+  padding: 10px;
+  background: white;
+}
+.github-editor {
+  display: grid;
+  grid-template-columns: minmax(140px, 220px) 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}
+.github-editor nav {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: auto;
+}
+.github-editor nav button {
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.github-editor textarea {
+  width: 100%;
+}
+.muted {
+  font-size: 13px;
+  color: #657084;
+}
+details {
+  margin: 16px 0;
+}
+summary {
+  cursor: pointer;
+}
+@media (max-width: 640px) {
+  .github-editor {
+    grid-template-columns: 1fr;
+  }
+}

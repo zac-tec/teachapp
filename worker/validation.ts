@@ -15,10 +15,67 @@ export function validateEntry(input: unknown) {
     revision < 0 ||
     !p ||
     typeof p !== "object" ||
-    !["lesson", "topic", "project", "reflection"].includes(kind)
+    ![
+      "lesson",
+      "topic",
+      "project",
+      "reflection",
+      "practice",
+      "leetcode",
+    ].includes(kind)
   )
     fail("Invalid entry.");
   let payload: Record<string, any> = {};
+  if (["practice", "leetcode"].includes(kind)) {
+    if (
+      !text(p.title, 160) ||
+      !p.title.trim() ||
+      !text(p.topic, 100) ||
+      !text(p.date, 10) ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(p.date) ||
+      !Number.isFinite(Date.parse(p.date + "T00:00:00Z")) ||
+      new Date(p.date + "T00:00:00Z").toISOString().slice(0, 10) !== p.date ||
+      !text(p.code) ||
+      !text(p.notes) ||
+      !text(p.correction) ||
+      !text(p.url, 2000) ||
+      ![
+        "Planned",
+        "Working on it",
+        "Solved with help",
+        "Solved independently",
+        "Revisit",
+      ].includes(p.status) ||
+      !["Not specified", "Easy", "Medium", "Hard"].includes(p.difficulty)
+    )
+      fail("Check the question fields.");
+    if (p.url) {
+      try {
+        const u = new URL(p.url);
+        if (
+          !["https:", "http:"].includes(u.protocol) ||
+          u.username ||
+          u.password
+        )
+          fail("Use an http or https question link.");
+      } catch {
+        fail("Use a valid question link.");
+      }
+    }
+    payload = Object.fromEntries(
+      [
+        "title",
+        "topic",
+        "date",
+        "code",
+        "notes",
+        "correction",
+        "url",
+        "status",
+        "difficulty",
+      ].map((k) => [k, p[k]]),
+    );
+  }
   if (kind === "lesson") {
     if (
       !text(p.title, 160) ||
@@ -112,6 +169,7 @@ export function validateEntry(input: unknown) {
 export function mayWrite(role: string, kind: string) {
   return (
     role === "teacher" ||
-    (role === "student" && ["reflection", "project"].includes(kind))
+    (role === "student" &&
+      ["reflection", "project", "practice", "leetcode"].includes(kind))
   );
 }

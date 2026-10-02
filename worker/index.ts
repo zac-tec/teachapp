@@ -1,3 +1,4 @@
+import { github } from "./github.ts";
 import {
   authenticate,
   configured,
@@ -100,6 +101,8 @@ export default {
       }
       const user = await authenticate(req, env);
       if (!user) return json({ error: "Please sign in." }, 401);
+      if (path.startsWith("/api/github/"))
+        return await github(req, env, user, () => body(req));
       if (path !== "/api/journey") return json({ error: "Not found." }, 404);
       if (req.method === "GET") {
         const rows = await env.DB.prepare(
@@ -126,6 +129,16 @@ export default {
           .bind(payload.lessonId, "lesson")
           .first();
         if (!row) return json({ error: "Class not found." }, 400);
+      }
+      if (["practice", "leetcode"].includes(kind) && user.role === "student") {
+        const previous = await env.DB.prepare(
+          "SELECT payload FROM records WHERE id = ? AND kind = ?",
+        )
+          .bind(id, kind)
+          .first<{ payload: string }>();
+        payload.correction = previous
+          ? JSON.parse(previous.payload).correction || ""
+          : "";
       }
       const now = new Date().toISOString();
       const result =

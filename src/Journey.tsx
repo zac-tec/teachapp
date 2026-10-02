@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
+import GitHubWorkspace from "./GitHubWorkspace";
+import Practice, { PracticeProgress } from "./Practice";
 import GoogleSignIn from "./GoogleSignIn";
-const learner = import.meta.env.VITE_STUDENT_NAME || "My brother";
+const learner = import.meta.env.VITE_STUDENT_NAME || "Thomman";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,
@@ -124,7 +126,9 @@ function Resources({ text }: { text: string }) {
   );
 }
 export default function Journey() {
-  const [tab, setTab] = useState("overview"),
+  const [tab, setTab] = useState(
+      () => window.location.hash.slice(1) || "overview",
+    ),
     [records, setRecords] = useState<RecordItem[]>([]),
     [role, setRole] = useState(""),
     [loading, setLoading] = useState(true),
@@ -140,6 +144,14 @@ export default function Journey() {
   const [project, setProject] = useState<any>(null),
     [projectId, setProjectId] = useState(""),
     [projectRevision, setProjectRevision] = useState(0);
+  useEffect(() => {
+    window.history.replaceState(null, "", "#" + tab);
+  }, [tab]);
+  useEffect(() => {
+    const change = () => setTab(window.location.hash.slice(1) || "overview");
+    window.addEventListener("hashchange", change);
+    return () => window.removeEventListener("hashchange", change);
+  }, []);
   const teacher = role === "teacher" && !studentView;
   const lessons = records
     .filter((x) => x.kind === "lesson")
@@ -330,7 +342,7 @@ export default function Journey() {
       <section className="intro">
         <div>
           <p className="eyebrow">{learner.toUpperCase()}’S LEARNING NOTEBOOK</p>
-          <h1>One class. One step forward.</h1>
+          <h1>Your space to learn and build.</h1>
           <p>
             Keep the work, notice the progress, and return to what you’ve
             learned.
@@ -379,29 +391,44 @@ export default function Journey() {
         </article>
       ) : (
         <Tabs value={tab} onValueChange={setTab}>
-          <TabsList aria-label="Journal sections">
-            <TabsTrigger value="overview">
-              <BookOpen />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="journal">
-              <NotebookPen />
-              Class journal
-            </TabsTrigger>
-            <TabsTrigger value="roadmap">
-              <Route />
-              Roadmap
-            </TabsTrigger>
-            <TabsTrigger value="revision">
-              <Code2 />
-              Revision
-            </TabsTrigger>
-            <TabsTrigger value="projects">
-              <FolderOpen />
-              Projects
-            </TabsTrigger>
+          <TabsList aria-label="Workspace pages">
+            <TabsTrigger value="overview">Dashboard</TabsTrigger>
+            <TabsTrigger value="practice">Daily Practice</TabsTrigger>
+            <TabsTrigger value="leetcode">LeetCode</TabsTrigger>
+            <TabsTrigger value="github">Projects & GitHub</TabsTrigger>
+            <TabsTrigger value="journal">Learning Journey</TabsTrigger>
           </TabsList>
+          {["journal", "roadmap", "revision", "projects"].includes(tab) && (
+            <TabsList aria-label="Learning journey pages">
+              <TabsTrigger value="journal">Class journal</TabsTrigger>
+              <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
+              <TabsTrigger value="revision">Revision</TabsTrigger>
+              <TabsTrigger value="projects">Project notes</TabsTrigger>
+            </TabsList>
+          )}
+          <TabsContent value="github" forceMount hidden={tab !== "github"}>
+            <GitHubWorkspace student={role === "student"} />
+          </TabsContent>
+          <TabsContent value="practice" forceMount hidden={tab !== "practice"}>
+            <Practice
+              kind="practice"
+              records={records}
+              save={save}
+              saving={saving}
+              teacher={teacher}
+            />
+          </TabsContent>
+          <TabsContent value="leetcode" forceMount hidden={tab !== "leetcode"}>
+            <Practice
+              kind="leetcode"
+              records={records}
+              save={save}
+              saving={saving}
+              teacher={teacher}
+            />
+          </TabsContent>
           <TabsContent value="overview">
+            <PracticeProgress records={records} />
             <div className="stats">
               {stat(lessons.length, "Classes recorded", <CalendarDays />)}
               {stat(studied.length, "Topics explored", <BookOpen />)}

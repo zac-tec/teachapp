@@ -116,3 +116,33 @@ test("fails closed when hosting is unconfigured or identity is uninvited", () =>
   assert.equal(configured({ ...env, SESSION_SECRET: "" }), false);
   assert.equal(roleFor("attacker@example.com", env), null);
 });
+
+test("practice allows a learner update but rejects unsafe links and invalid dates", () => {
+  const p = {
+    id: "q",
+    kind: "leetcode",
+    revision: 0,
+    payload: {
+      title: "Two sum",
+      topic: "Arrays",
+      date: "2026-10-02",
+      code: "print(1)",
+      notes: "Try a dictionary",
+      correction: "",
+      url: "https://leetcode.com/problems/two-sum/",
+      status: "Working on it",
+      difficulty: "Easy",
+    },
+  };
+  assert.equal(mayWrite("student", "leetcode"), true);
+  assert.equal(validateEntry(p).payload.code, "print(1)");
+  assert.throws(() =>
+    validateEntry({ ...p, payload: { ...p.payload, date: "2026-02-31" } }),
+  );
+  assert.throws(() =>
+    validateEntry({
+      ...p,
+      payload: { ...p.payload, url: "javascript:alert(1)" },
+    }),
+  );
+});

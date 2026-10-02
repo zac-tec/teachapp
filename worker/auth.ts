@@ -1,6 +1,9 @@
 import { createRemoteJWKSet, jwtVerify, SignJWT } from "jose";
 export interface Env {
   DB: D1Database;
+  GITHUB_CLIENT_ID?: string;
+  GITHUB_CLIENT_SECRET?: string;
+  GITHUB_USERNAME?: string;
   APP_ORIGIN: string;
   GOOGLE_CLIENT_ID: string;
   OWNER_EMAIL: string;
@@ -15,11 +18,11 @@ const encoder = new TextEncoder();
 export function configured(env: Env) {
   return Boolean(
     env.APP_ORIGIN &&
-      env.GOOGLE_CLIENT_ID &&
-      env.OWNER_EMAIL &&
-      env.STUDENT_EMAIL &&
-      env.SESSION_SECRET?.length >= 32 &&
-      !env.SESSION_SECRET.startsWith("REPLACE_"),
+    env.GOOGLE_CLIENT_ID &&
+    env.OWNER_EMAIL &&
+    env.STUDENT_EMAIL &&
+    env.SESSION_SECRET?.length >= 32 &&
+    !env.SESSION_SECRET.startsWith("REPLACE_"),
   );
 }
 export function roleFor(email: string, env: Env): User["role"] | null {
