@@ -124,7 +124,7 @@ export async function github(
       configured,
       connected: !!row,
       login: row?.login,
-      expected: env.GITHUB_USERNAME || "tompaul-10270droid",
+      expected: env.GITHUB_USERNAME || "tompaul1027-droid",
     });
   if (path === "/api/github/disconnect" && req.method === "POST") {
     await env.DB.prepare("DELETE FROM github_connections WHERE user_sub=?")
@@ -163,7 +163,7 @@ export async function github(
       state,
       code_challenge: challenge,
       code_challenge_method: "S256",
-      login: env.GITHUB_USERNAME || "tompaul-10270droid",
+      login: env.GITHUB_USERNAME || "tompaul1027-droid",
     }).toString();
     return respond({ url: target.toString() }, 200, {
       "Set-Cookie": cookie(env, "github", token, 600),
@@ -203,7 +203,7 @@ export async function github(
       const account = await api(t.access_token, "/user");
       if (
         account.login.toLowerCase() !==
-        (env.GITHUB_USERNAME || "tompaul-10270droid").toLowerCase()
+        (env.GITHUB_USERNAME || "tompaul1027-droid").toLowerCase()
       )
         throw Error();
       const encrypted = await new EncryptJWT({ token: t.access_token })
